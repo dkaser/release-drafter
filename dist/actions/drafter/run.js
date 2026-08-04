@@ -2491,12 +2491,14 @@ var pullRequestToString = (params) => params.pullRequests.map((pullRequest) => {
 	let pullAuthor = "ghost";
 	if (pullRequest.author) pullAuthor = pullRequest.author.__typename && pullRequest.author.__typename === "Bot" ? `[${pullRequest.author.login}[bot]](${pullRequest.author.url})` : pullRequest.author.login;
 	const authorTemplate = params.config["change-author-template"];
+	let title = pullRequest.title.replace(/^(feat|fix|build|chore|ci|refactor|docs|style|perf|test)(\(.+\))?: /, "");
+	title = title.charAt(0).toUpperCase() + title.slice(1);
 	return renderTemplate({
 		template: params.config["change-template"],
 		object: {
 			$CATEGORY: params.category ?? "",
 			$TITLE: escapeTitle({
-				title: pullRequest.title,
+				title,
 				escapes: params.config["change-title-escapes"]
 			}),
 			$NUMBER: pullRequest.number.toString(),

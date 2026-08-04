@@ -31,12 +31,18 @@ export const pullRequestToString = (params: {
       }
       const authorTemplate = params.config['change-author-template']
 
+      const conventionalCommit =
+        /^(feat|fix|build|chore|ci|refactor|docs|style|perf|test)(\(.+\))?: /
+
+      let title = pullRequest.title.replace(conventionalCommit, '')
+      title = title.charAt(0).toUpperCase() + title.slice(1)
+
       return renderTemplate({
         template: params.config['change-template'],
         object: {
           $CATEGORY: params.category ?? '',
           $TITLE: escapeTitle({
-            title: pullRequest.title,
+            title: title,
             escapes: params.config['change-title-escapes'],
           }),
           $NUMBER: pullRequest.number.toString(),
